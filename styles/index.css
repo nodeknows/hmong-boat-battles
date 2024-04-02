@@ -1,0 +1,18 @@
+* {
+    margin: 0;
+    box-sizing: border-box;
+}
+
+section {
+    text-align: center;
+    width: 50%;
+    height: 100%;
+    max-height: 50px;
+    background-color: cadetblue;
+}
+
+img {
+    height: 100%;
+    max-height: 40px;
+    transform: rotate(180deg);
+}
