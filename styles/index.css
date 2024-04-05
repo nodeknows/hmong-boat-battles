@@ -48,62 +48,68 @@ body {
     bottom: 0;
 }
 
+#logo { 
+    max-width: 325px;
+    filter: drop-shadow(0 0 1rem rgb(255, 217, 0));
+}
+
 #intro {
     position: absolute;
-
-    width: 100%;
+    
     height: 100%;
+    width: 100%;
 
     display: flex;
-    flex-direction: column;
+    flex-flow: column;
     justify-content: center;
     align-items: center;
-
-    line-height: 3rem;
-}
-
-#intro img {
-    max-height: 250px;
-    padding-bottom: 4vh;
-}
-
-h1,
-h2 {
-    color: white;
-}
-
-h1 {
-    font-size: 6rem;
-}
-
-h2 {
-    font-family: Mandali;
-}
-
-form {
-    width: 100%;
-    text-align: center;
 }
 
 #intersection {
     display: flex;
-    flex-direction: column;
+    flex-flow: column;
     justify-content: center;
     align-items: center;
-    margin: 3vh 0 3vh 0
+
+    color: white;
+    line-height: 35px;
 }
 
-button {
+#intersection h1 {
+    font-size: 300%
+}
+
+#intersection h2 {
+    font-size: 100%;
+    font-family: Mandali;
+}
+
+#intro form {
+    margin-top: 1vh;
+
     width: 100%;
     height: 100%;
-    max-width: 250px;
-    border-radius: 100vw;
-    border: none;
-    font-size: 2rem;
-    font-family: Kumar;
-    padding: 1vh 0 0 0;
+    max-width: 175px;
+    max-height: 50px;
+
+    display: flex;
+    justify-content: center;
 }
 
-button:active {
-    background-color:gray ;
+#intro form button {
+    width: 100%;
+    border-radius: 1rem;
+    border: none;
+
+    font-family: Kumar;
+    background-color: #4E4E4E;
+    color: white;
+
+    font-size: 200%;
+    transition: border-radius ,5s;
+}
+
+#intro form button:hover {
+   
+    border-radius: 2rem;
 }
