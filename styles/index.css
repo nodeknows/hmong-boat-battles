@@ -91,11 +91,14 @@ form>button:hover {
 .belt {
     position: absolute;
 
-    width: 100%;
+    width: 150%;
+    background-color: grey;
     height: 100px;
     display: flex;
 
     justify-content: center;
+
+    overflow: hidden;
 }
 
 .belt:nth-of-type(1) {
@@ -109,22 +112,14 @@ form>button:hover {
 }
 
 @keyframes moveLeft {
-    0% {
-        left: 0
-    }
-
     100% {
-        left: -100px
+        transform: translateX(-100px);
     }
 }
 
 @keyframes moveRight {
-    0% {
-        left: 0
-    }
-
     100% {
-        left: 100px
+        transform: translateX(100px)
     }
 }
 
@@ -142,22 +137,31 @@ form>button:hover {
     }
 
     @keyframes moveLeft {
-        0% {
-            left: 0
-        }
-
         100% {
-            left: -60px
+            transform: translateX(-60px)
         }
     }
 
     @keyframes moveRight {
-        0% {
-            left: 0
-        }
-
         100% {
-            left: 60px
+            transform: translateX(60px)
+        }
+    }
+}
+
+@media only screen and (max-height: 725px) {
+    .belt {
+        height: 35px;
+    }
+    @keyframes moveLeft {
+        100% {
+            transform: translateX(-35px)
+        }
+    }
+
+    @keyframes moveRight {
+        100% {
+            transform: translateX(35px)
         }
     }
 }
