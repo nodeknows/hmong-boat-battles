@@ -1,33 +1,17 @@
-// when the window size changes, we want to readjust the amount of mountains the screen has
+document.querySelector('button').addEventListener("click", function(event) {
+    event.preventDefault()
+    window.open('/play.html', '_self')
+});
 
-const mountTop = document.getElementById('mountain-top');
-const mountBottom = document.getElementById('mountain-bottom')
-const img_length = 100;
+var belt = document.querySelectorAll('.belt')
 
-let mountain_count = 0;
-
-function createMountain() {
-    let img = document.createElement('img');
-    img.setAttribute('src', 'imgs/mountain-white.png');
-    img.setAttribute('alt', '');
-    return img;
+function getClone() {
+    let i = document.createElement('img');
+    i.setAttribute('src', "imgs/home-white.png")
+    return i
 }
-
-function readjustMountains() {
-    const required_imgs = Math.round(window.screen.width / img_length) + 1;
-    if (mountain_count < required_imgs) {
-        do {
-            let img_top = createMountain();
-            let img_bottom = createMountain();
-            mountTop.appendChild(img_top)
-            mountBottom.appendChild(img_bottom)
-
-            mountain_count++
-        } while (mountain_count < required_imgs)
-    }
+for (let i = 0; i <= 90; i++) {
+    let t = getClone(), b = getClone();
+    belt[0].appendChild(t)
+    belt[1].appendChild(b)
 }
-
-readjustMountains()
-
-window.onresize = readjustMountains;
-

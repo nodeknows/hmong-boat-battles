@@ -1,11 +1,6 @@
 @font-face {
-    font-family: Kumar;
-    src: url(../fonts/KumarOne-Regular.ttf);
-}
-
-@font-face {
-    font-family: IBM;
-    src: url(../fonts/IBMPlexMono-Regular.ttf);
+    font-family: Freestyle;
+    src: url(../fonts/FactuallyHandwritingPersonalRegular-1GOp0.otf);
 }
 
 * {
@@ -14,108 +9,155 @@
 }
 
 body {
-    background-color: #3E3E3E;
-    font-family: Kumar;
+    background-color: #363636;
+    overflow: hidden;
 }
 
-.mountsec {
-    overflow-x: hidden;
+/* header/footer */
+header {
+    background-color: #4f4f4f;
     position: absolute;
-
-
-    width: 100%;
-    height: 100%;
-    max-height: 75px;
-
-    display: flex;
-    justify-content: center;
-}
-
-.mountsec img {
-    height: 100%;
-    max-height: 75px;
-    opacity: .45;
-}
-
-#mountain-top {
     top: 0;
+
+    width: 100%;
+    height: 5vh;
 }
 
-#mountain-top img {
-    transform: rotate(180deg)
-}
-
-#mountain-bottom {
-    bottom: 0;
-}
-
-#logo { 
-    max-width: 450px;
-    filter: drop-shadow(0 0 1rem rgb(255, 217, 0));
-}
-
-#intro {
+footer {
+    background-color: #4f4f4f;
     position: absolute;
-    
-    height: 100%;
-    width: 100%;
+    bottom: 0;
 
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
-    align-items: center;
+    width: 100%;
+    height: 2vh;
 }
 
-#intersection {
+/* intro/intersection */
+#intro {
+    width: 100%;
+    height: 100vh;
+
     display: flex;
-    flex-flow: column;
-    justify-content: flex-start;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
 
+    gap: 1vh;
+}
+
+#intro h1 {
     color: white;
-    line-height: 50px;
-    
-    height: 100%;
-    max-height: 250px;
+    font-family: Freestyle;
+    font-size: 7rem;
 }
 
-#intersection h1 {
-    font-size: 500%
+#intro section {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
 }
 
-#intersection h2 {
-    font-size: 150%;
-    font-family: IBM;
-}
-
-#intro form {
-    margin-top: 1vh;
-
+/* button */
+form {
     width: 100%;
-    height: 100%;
-    max-width: 175px;
-    max-height: 50px;
-
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
-#intro form button {
-    width: 100%;
-    border-radius: 1rem;
+form>button {
+    height: 50px;
+    width: 100px;
+
+    border-radius: 10px;
     border: none;
 
-    font-family: Kumar;
-    background-color: #4E4E4E;
-    color: white;
+    font-size: 1.5rem;
 
-    font-size: 200%;
-    transition: all .5s;
+    color: #4f4f4f;
+    font-weight: bold;
+
+    transition: all 0.075s
 }
 
-#intro form button:hover {
-    background-color: #626262;
-    border-radius: 5rem;
-    font-size: 205%;
-    box-shadow: 0 0 25px 5px white;
+form>button:hover {
+    filter: drop-shadow(0 0 0.5rem rgb(255, 255, 255));
+    font-size: 1.75rem;
+}
+
+/* belts */
+.belt {
+    position: absolute;
+
+    width: 100%;
+    height: 100px;
+    display: flex;
+
+    justify-content: center;
+}
+
+.belt:nth-of-type(1) {
+    top: 6vh;
+    animation: moveLeft 1s linear infinite;
+}
+
+.belt:nth-of-type(2) {
+    bottom: 3vh;
+    animation: moveRight 1s linear infinite;
+}
+
+@keyframes moveLeft {
+    0% {
+        left: 0
+    }
+
+    100% {
+        left: -100px
+    }
+}
+
+@keyframes moveRight {
+    0% {
+        left: 0
+    }
+
+    100% {
+        left: 100px
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .belt {
+        height: 60px;
+    }
+
+    .belt:nth-of-type(1) {
+        animation: moveLeft .75s linear infinite;
+    }
+
+    .belt:nth-of-type(2) {
+        animation: moveRight .75s linear infinite;
+    }
+
+    @keyframes moveLeft {
+        0% {
+            left: 0
+        }
+
+        100% {
+            left: -60px
+        }
+    }
+
+    @keyframes moveRight {
+        0% {
+            left: 0
+        }
+
+        100% {
+            left: 60px
+        }
+    }
 }
