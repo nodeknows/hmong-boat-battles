@@ -91,8 +91,7 @@ form>button:hover {
 .belt {
     position: absolute;
 
-    width: 150%;
-    background-color: grey;
+    width: 100%;
     height: 100px;
     display: flex;
 
@@ -103,11 +102,18 @@ form>button:hover {
 
 .belt:nth-of-type(1) {
     top: 6vh;
+    
+}
+
+.top-kungfu {
     animation: moveLeft 1s linear infinite;
 }
 
 .belt:nth-of-type(2) {
     bottom: 3vh;
+}
+
+.bottom-kungfu {
     animation: moveRight 1s linear infinite;
 }
 
@@ -128,11 +134,11 @@ form>button:hover {
         height: 60px;
     }
 
-    .belt:nth-of-type(1) {
+    .top-kungfu {
         animation: moveLeft .75s linear infinite;
     }
 
-    .belt:nth-of-type(2) {
+    .bottom-kungfu {
         animation: moveRight .75s linear infinite;
     }
 
@@ -164,4 +170,47 @@ form>button:hover {
             transform: translateX(35px)
         }
     }
+}
+
+/* title animation */
+h1:nth-of-type(1) {
+    animation: bounce 6s ease infinite;
+}
+
+h1:nth-of-type(2) {
+    animation: bounce2 6s ease infinite;
+}
+
+h1:nth-of-type(3) {
+    animation: bounce3 6s ease infinite;
+}
+  
+@keyframes bounce {
+    0% { transform:translateY(0%); }
+    10% { transform:translateY(-15%); }
+    20% { transform:translateY(0%); }
+    25% { transform:translateY(-7%); }
+    27% { transform:translateY(0%); }
+    29% { transform:translateY(-3%); }
+    30% { transform:translateY(0); }
+}
+
+@keyframes bounce2 {
+    30% { transform:translateY(0%); }
+    40% { transform:translateY(-15%); }
+    50% { transform:translateY(0%); }
+    55% { transform:translateY(-7%); }
+    57% { transform:translateY(0%); }
+    59% { transform:translateY(-3%); }
+    60% { transform:translateY(0); }
+}
+
+@keyframes bounce3 {
+    60% { transform:translateY(0%); }
+    70% { transform:translateY(-15%); }
+    80% { transform:translateY(0%); }
+    85% { transform:translateY(-7%); }
+    87% { transform:translateY(0%); }
+    89% { transform:translateY(-3%); }
+    90% { transform:translateY(0); }
 }

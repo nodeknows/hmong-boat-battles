@@ -13,6 +13,8 @@ function getClone() {
 }
 for (let i = 0; i <= 90; i++) {
     let t = getClone(), b = getClone();
+    t.setAttribute('class', "top-kungfu")
     belt[0].appendChild(t)
+    b.setAttribute('class', "bottom-kungfu")
     belt[1].appendChild(b)
 }
