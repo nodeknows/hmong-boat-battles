@@ -1,6 +1,11 @@
 @font-face {
     font-family: Freestyle;
-    src: url(../fonts/FactuallyHandwritingPersonalRegular-1GOp0.otf);
+    src: url(../fonts/brushed.ttf);
+}
+
+@font-face {
+    font-family: Murder;
+    src: url(../fonts/youmurdererbb_reg.ttf);
 }
 
 * {
@@ -21,6 +26,20 @@ header {
 
     width: 100%;
     height: 5vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: Murder;
+    font-size: 200%;
+    color: #4f4f4f;
+
+    z-index: -1;
+}
+
+header:hover {
+    color: white;
 }
 
 footer {
@@ -30,6 +49,8 @@ footer {
 
     width: 100%;
     height: 2vh;
+
+    z-index: -1;
 }
 
 /* intro/intersection */
@@ -42,7 +63,7 @@ footer {
     justify-content: center;
     align-items: center;
 
-    gap: 1vh;
+    gap: 5vh;
 }
 
 #intro h1 {
@@ -79,7 +100,7 @@ form>button {
     color: #4f4f4f;
     font-weight: bold;
 
-    transition: all 0.075s
+    transition: all 0.075s;
 }
 
 form>button:hover {
@@ -100,13 +121,19 @@ form>button:hover {
     overflow: hidden;
 }
 
+@media only screen and (max-width: 430px) {
+    #intro > section > h1{
+        font-size: 5.5rem
+    }
+}
+
 .belt:nth-of-type(1) {
     top: 6vh;
     
 }
 
 .top-kungfu {
-    animation: moveLeft 1s linear infinite;
+    animation: moveLeft 2s linear infinite;
 }
 
 .belt:nth-of-type(2) {
@@ -114,7 +141,7 @@ form>button:hover {
 }
 
 .bottom-kungfu {
-    animation: moveRight 1s linear infinite;
+    animation: moveRight 2s linear infinite;
 }
 
 @keyframes moveLeft {
@@ -135,11 +162,11 @@ form>button:hover {
     }
 
     .top-kungfu {
-        animation: moveLeft .75s linear infinite;
+        animation: moveLeft 1.5s linear infinite;
     }
 
     .bottom-kungfu {
-        animation: moveRight .75s linear infinite;
+        animation: moveRight 1.5s linear infinite;
     }
 
     @keyframes moveLeft {
@@ -173,15 +200,15 @@ form>button:hover {
 }
 
 /* title animation */
-h1:nth-of-type(1) {
+#intro h1:nth-of-type(1) {
     animation: bounce 6s ease infinite;
 }
 
-h1:nth-of-type(2) {
+#intro h1:nth-of-type(2) {
     animation: bounce2 6s ease infinite;
 }
 
-h1:nth-of-type(3) {
+#intro  h1:nth-of-type(3) {
     animation: bounce3 6s ease infinite;
 }
   
@@ -213,4 +240,12 @@ h1:nth-of-type(3) {
     87% { transform:translateY(0%); }
     89% { transform:translateY(-3%); }
     90% { transform:translateY(0); }
+}
+
+/* game things */
+#game {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    background-color: white;
 }
