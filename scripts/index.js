@@ -59,7 +59,7 @@ play.addEventListener("click", async function (event) {
     play.innerHTML = ''
     play.style.transition = "all 1s"
     play.style.zIndex = 5
-    play.style.filter = "drop-shadow(0 0 2rem rgb(255, 255, 255))"
+    play.style.filter = "none"
     play.style.top = "50%"
     play.style.width = '100%'
     play.style.borderRadius = 0
