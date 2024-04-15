@@ -77,3 +77,12 @@ play.addEventListener("click", async function (event) {
     intro.remove()
 });
 
+// 9x8 72
+const row = document.querySelector('.row')
+const bp = document.querySelector('.bp')
+const topsec = document.querySelector('#topsec')
+
+for (let i=1; i<=7; i++) {
+    let clone = row.cloneNode(true);
+    topsec.appendChild(clone)
+}
