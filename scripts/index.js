@@ -9,9 +9,9 @@ function getClone() {
 }
 for (let i = 0; i <= 90; i++) {
     let t = getClone(), b = getClone();
-    t.setAttribute('class', "top-kungfu")
+    t.setAttribute('class', "topHome")
     belt[0].appendChild(t)
-    b.setAttribute('class', "bottom-kungfu")
+    b.setAttribute('class', "bottomHome")
     belt[1].appendChild(b)
 }
 
@@ -80,9 +80,16 @@ play.addEventListener("click", async function (event) {
 // 9x8 72
 const row = document.querySelector('.row')
 const bp = document.querySelector('.bp')
-const topsec = document.querySelector('#topsec')
+const topSec = document.querySelector('#topSec')
+const rowNames = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
 
+const add = []
+
+row.id = rowNames[0]
 for (let i=1; i<=7; i++) {
     let clone = row.cloneNode(true);
-    topsec.appendChild(clone)
+    clone.id = rowNames[i]
+    topSec.appendChild(clone)
 }
+
+// 8 rows A-H  |  9 columns 1-9

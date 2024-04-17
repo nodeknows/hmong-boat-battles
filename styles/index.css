@@ -132,7 +132,7 @@ form>button:hover {
     
 }
 
-.top-kungfu {
+.topHome {
     animation: moveLeft 2s linear infinite;
 }
 
@@ -140,7 +140,7 @@ form>button:hover {
     bottom: 3vh;
 }
 
-.bottom-kungfu {
+.bottomHome {
     animation: moveRight 2s linear infinite;
 }
 
@@ -161,11 +161,11 @@ form>button:hover {
         height: 60px;
     }
 
-    .top-kungfu {
+    .topHome {
         animation: moveLeft 1.5s linear infinite;
     }
 
-    .bottom-kungfu {
+    .bottomHome {
         animation: moveRight 1.5s linear infinite;
     }
 
@@ -258,7 +258,7 @@ form>button:hover {
 
 }
 
-#containgame > h1 {
+#containGame > h1 {
     text-align: center;
     background-color: yellow;
 
@@ -282,7 +282,7 @@ form>button:hover {
     align-items: center;
 }
 
-#topsec {
+#topSec {
     display: flex;
     flex-flow: column;
     justify-content: center;
@@ -312,8 +312,44 @@ form>button:hover {
     height: 100%;
 }
 
-#bottomsec {
+#bottomSec {
     background-color: #FFE177;
     width: 100%;
     flex-basis: 20%;
+}
+
+#boatSelection {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#boatSelection > div {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 5vw;
+}
+
+#boatSelection > div h1 {
+    text-align: center;
+    filter: drop-shadow(0 1px 0.1rem black);
+}
+
+#boatSelection > div img {
+}
+
+#basket {
+    max-width: 50px;
+    max-height: 50px;
+}
+
+#bamboo {
+    max-width: 30px;
+}
+
+#fishing {
+    max-width: 40px;
 }
