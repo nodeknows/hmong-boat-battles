@@ -93,3 +93,30 @@ for (let i=1; i<=7; i++) {
 }
 
 // 8 rows A-H  |  9 columns 1-9
+
+// selecting code
+let turn = 1;
+
+let selectedBoat
+let selectedElem
+
+const boatSelection = document.querySelector('#boatSelection');
+const basket = document.querySelector('#basket');
+const bamboo = document.querySelector('#bamboo');
+const fishing = document.querySelector('#fishing');
+
+function selectBoat(a) {
+    selectedElem = document.querySelector(`#${selectedBoat}`);
+    
+    if (selectedBoat == null) {
+        selectedBoat = a;
+        selectedElem = document.querySelector(`#${selectedBoat}`);
+        selectedElem.style.border = '3px solid white'
+    } else if (selectedboat == a) {
+        selectedElem.style.border = 'none';
+        selectedBoat = null;
+    } else {
+        
+        selectedElem.style.border = '3px solid white'
+    }
+};

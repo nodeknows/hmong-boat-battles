@@ -316,6 +316,11 @@ form>button:hover {
     background-color: #FFE177;
     width: 100%;
     flex-basis: 20%;
+
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
 }
 
 #boatSelection {
@@ -323,6 +328,8 @@ form>button:hover {
     flex-flow: column;
     justify-content: center;
     align-items: center;
+
+    gap: 2vh;
 }
 
 #boatSelection > div {
@@ -333,23 +340,20 @@ form>button:hover {
     gap: 5vw;
 }
 
-#boatSelection > div h1 {
+#boatSelection h1 {
     text-align: center;
     filter: drop-shadow(0 1px 0.1rem black);
 }
 
 #boatSelection > div img {
+    max-height: 65px;
 }
 
-#basket {
-    max-width: 50px;
-    max-height: 50px;
+#boatSelection > div img:hover {
+    filter: drop-shadow(0 0 1rem rgb(255, 255, 255));
 }
 
-#bamboo {
-    max-width: 30px;
+/* #boatSelection > div img:active {
+    border: 3px solid white;
 }
-
-#fishing {
-    max-width: 40px;
-}
+ */
