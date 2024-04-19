@@ -330,6 +330,8 @@ form>button:hover {
     align-items: center;
 
     gap: 2vh;
+    padding-bottom: 2vh;
+
 }
 
 #boatSelection > div {

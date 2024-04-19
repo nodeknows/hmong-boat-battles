@@ -97,26 +97,67 @@ for (let i=1; i<=7; i++) {
 // selecting code
 let turn = 1;
 
-let selectedBoat
-let selectedElem
+let selectedBoat = 'none';
+let selectedElem;
+
+const boatsLeft = {
+    "basket": 3,
+    "bamboo": 2,
+    "fishing": 1
+}
 
 const boatSelection = document.querySelector('#boatSelection');
 const basket = document.querySelector('#basket');
 const bamboo = document.querySelector('#bamboo');
 const fishing = document.querySelector('#fishing');
 
-function selectBoat(a) {
-    selectedElem = document.querySelector(`#${selectedBoat}`);
-    
-    if (selectedBoat == null) {
-        selectedBoat = a;
-        selectedElem = document.querySelector(`#${selectedBoat}`);
-        selectedElem.style.border = '3px solid white'
-    } else if (selectedboat == a) {
-        selectedElem.style.border = 'none';
-        selectedBoat = null;
-    } else {
-        
-        selectedElem.style.border = '3px solid white'
+function selectBoat(boat) {
+    if (boatsLeft[boat] === 0) return;
+
+    if (selectedBoat === boat) {
+        selectedElem.style.border = 'none' 
+        selectedBoat = 'none';
+        selectedElem = null;
+        return;
     }
-};
+
+    if (selectedBoat !== 'none') {
+        selectedElem.style.border = 'none'
+    }
+
+    selectedBoat = boat;
+    selectedElem = document.getElementById(boat);
+    selectedElem.style.border = "3px solid white"
+
+    initSqSelect()
+}
+
+let SqSelecting = false;
+let positions = {
+    "basket": [
+        [],
+        [],
+        []
+    ],
+    "bamboo": [
+        [],
+        []
+    ],
+    "fishing": [
+        []
+    ],
+}
+
+const rows = document.querySelectorAll('.row');
+let squares = {}
+
+for (let r of rows) {
+    squares[r.id] = []; 
+    for (let sq of document.querySelectorAll(`#${r.id} > .bp`)) {
+        squares[r.id].push(sq)
+    }
+}
+
+function initSqSelect() {
+    
+}
