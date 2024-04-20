@@ -18,6 +18,10 @@ body {
     overflow: hidden;
 }
 
+#game, #chooseCharacter{
+    visibility: hidden;
+}
+
 /* header/footer */
 header {
     background-color: #4f4f4f;
@@ -35,7 +39,7 @@ header {
     font-size: 200%;
     color: #4f4f4f;
 
-    z-index: -1;
+    z-index: -1
 }
 
 header:hover {
@@ -50,12 +54,12 @@ footer {
     width: 100%;
     height: 2vh;
 
-    z-index: -1;
+    z-index: -1
 }
 
 /* intro/intersection */
 #intro {
-    width: 100%;
+    width: 100vw;
     height: 100vh;
 
     display: flex;
@@ -119,6 +123,8 @@ form>button:hover {
     justify-content: center;
 
     overflow: hidden;
+
+    z-index: -1
 }
 
 @media only screen and (max-width: 430px) {
@@ -247,7 +253,6 @@ form>button:hover {
     position: absolute;
     width: 100%;
     height: 100vh;
-    visibility: hidden;
     
     display: flex;
     justify-content: center;
@@ -255,7 +260,6 @@ form>button:hover {
     color: white;
 
     padding-top: 3vh;
-
 }
 
 #containGame > h1 {
@@ -305,7 +309,7 @@ form>button:hover {
     gap: 5px;
 }
 
-.bp {
+.sq {
     background-color: white;
     opacity: .5;
     width: 60px;
@@ -359,3 +363,84 @@ form>button:hover {
     border: 3px solid white;
 }
  */
+
+ /* chooseCharacter */
+#chooseCharacter {
+    position: absolute;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    height: 100vh;
+    width: 100vw;
+}
+
+#frame {
+    width: 100%;
+    height: 100%;
+
+    max-height: 600px;
+    max-width: 1200px;
+
+    padding: 25px 25px 0 25px;
+
+    display: flex;
+}
+
+ul {
+    text-align: start;
+    padding-right: 30px;
+}
+
+li:nth-of-type(1), li:nth-of-type(3) {
+    margin-top: 20px;
+}
+
+#shaman, #riceFarmer {
+    flex-basis: 50%;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+}
+
+#shaman > img, #riceFarmer > img {
+    max-height: 50%;
+    max-width: 100%;
+}
+
+#shaman {
+    background-color: rgb(255, 0, 60);
+}
+
+#shaman:hover {
+    background-color: rgb(108, 0, 25);
+}
+
+#riceFarmer {
+    background-color: rgb(15, 0, 184);
+}
+
+#riceFarmer:hover {
+    background-color: rgb(7, 0, 86);
+}
+
+#consoleFrame {
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 25px 0 25px;
+}
+
+#consoleFrame > h3 {
+    background-color: yellow;
+    width: 100%;
+    text-align: center;
+}
+
+#chooseCharacter, #frame, #frame img { 
+    transition: 1s all;
+}

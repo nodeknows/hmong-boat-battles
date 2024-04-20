@@ -21,16 +21,16 @@
         <div id="containGame">
             <section id="containSec">
                 <section id="topSec">
-                    <div class="row" id="ASDSADS">
-                        <div class="bp _1">&nbsp</div>
-                        <div class="bp _2">&nbsp</div>
-                        <div class="bp _3">&nbsp</div>
-                        <div class="bp _4">&nbsp</div>
-                        <div class="bp _5">&nbsp</div>
-                        <div class="bp _6">&nbsp</div>
-                        <div class="bp _7">&nbsp</div>
-                        <div class="bp _8">&nbsp</div>
-                        <div class="bp _9">&nbsp</div>
+                    <div class="row" id="A">
+                        <div class="sq" id="1">&nbsp</div> <!-- 1 -->
+                        <div class="sq" id="2">&nbsp</div> <!-- 2 -->
+                        <div class="sq" id="3">&nbsp</div> <!-- 3 -->
+                        <div class="sq" id="4">&nbsp</div> <!-- 4 -->
+                        <div class="sq" id="5">&nbsp</div> <!-- 5 -->
+                        <div class="sq" id="6">&nbsp</div> <!-- 6 -->
+                        <div class="sq" id="7">&nbsp</div> <!-- 7 -->
+                        <div class="sq" id="8">&nbsp</div> <!-- 8 -->
+                        <div class="sq" id="9">&nbsp</div> <!-- 9 -->
                     </div>
                     
                 </section>
@@ -39,19 +39,48 @@
                     <section id="boatSelection">
                         <h1>BOATS AVAILABLE:</h1>
                         <div>
-                            <img id='basket' onclick='selectBoat("basket")' src="imgs/basket_horiz.svg" alt="">
-                            <img id='bamboo' onclick='selectBoat("bamboo")' src="imgs/bamboo_horiz.svg" alt="">
-                            <img id='fishing' onclick='selectBoat("fishing")' src="imgs/fishing_horiz.svg" alt="">
+                            <img id='basket' src="imgs/basket_horiz.svg" alt="">
+                            <img id='bamboo' src="imgs/bamboo_horiz.svg" alt="">
+                            <img id='fishing' src="imgs/fishing_horiz.svg" alt="">
                         </div>
                     </section>
                     
                 </section>
 
             </section>
-            <h1>P1 TURN: 1x Fishing (4 Space    ), 2x Bamboo (3 Space), 3x Basket (1 Space) Boats Left</h1>
+            <h1 id="gameConsole">CONSOLE LOG HERE - JS NEEDED</h1>
         </div>
 
     </section>
+
+    <section id="chooseCharacter">
+        <div id="frame">
+            <div id="shaman">
+                <img src="imgs/shaman-logo.jpg" alt="">
+                <h2>SHAMAN</h2>
+                <ul>
+                    <li><strong>Jingle Bell Attack</strong></li>
+                    <li>an attack that does half-damage in a cross shape (5 boxes total).</li>
+                    <li><strong>Spirit Bomb</strong></li>
+                    <li>an attack that does half-damage to 3 boxes of the player’s choosing.</li>
+                </ul>
+            </div>
+            <div id="riceFarmer">
+                <img src="imgs/ricefarmer-logo.jpg" alt="">
+                <h2>RICE FARMER</h2>
+                <ul>
+                    <li><strong>Flying Strawhat Tracker</strong></li>
+                    <li>A scouting move that reveals a box of an undiscovered boat.</li>
+                    <li><strong>Rice Blessing</strong></li>
+                    <li>Cast a one-hit protective spell for ONE boat.</li>
+                </ul>
+            </div>
+        </div>
+        <div id="consoleFrame">
+            <h3>P1 CHOOSE YOUR CHARACTER</h3>
+        </div>
+    </section>
+
 
     <section id="intro">
         <section>
