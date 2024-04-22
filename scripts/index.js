@@ -467,9 +467,39 @@ function resetSqSelect(boatDirectory) {
             playerIdTurn = 2;
             consoleOutput(`P${playerIdTurn} TURN: YOU'RE NEXT! CHOOSE YOUR BOATS.`)
         } else {
+            let barId;
+            let charName;
 
+            if (playerCharacters[playerIdTurn] === 'shaman') {
+                barId = 'shamanPowerBar';
+                charName = 'Shaman'
+            } else {
+                barId = 'riceFarmerPowerBar';
+                charName = 'Rice Farmer'
+            }
+
+            consoleOutput(`P1 TURN: Go attack! Your character is ${charName}.`)
+
+            const boatSelection = document.getElementById('boatSelection');
+
+            boatSelection.remove();
+
+            switchToCharBar(barId)
         }
      }
+}
+
+function switchToCharBar(targetBarId) {
+    let otherCharBarId = (targetBarId==='shamanPowerBar') ? "riceFarmerPowerBar" : "shamanPowerBar";
+    let otherCharBar = document.getElementById(otherCharBarId)
+
+    let targetBar = document.getElementById(targetBarId);
+
+    otherCharBar.style.visibility = 'hidden';
+    otherCharBar.style.display = 'none';
+
+    targetBar.style.visibility = 'visible';
+    targetBar.style.display = 'block';
 }
 
 function clearBoatSelection() {

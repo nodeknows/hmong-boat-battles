@@ -18,8 +18,22 @@ body {
     overflow: hidden;
 }
 
-#intro, #chooseCharacter, #boatSelection{
+/* #intro, #chooseCharacter {
     visibility: hidden;
+}
+
+#boatSelection, #shamanPowerBar{
+    display: none !important;
+} */
+
+/* required */
+#game, #chooseCharacter {
+    visibility: hidden;
+}
+
+.powerBar { 
+    visibility: hidden;
+    display: none
 }
 
 /* header/footer */
@@ -443,4 +457,52 @@ li:nth-of-type(1), li:nth-of-type(3) {
 
 #chooseCharacter, #frame, #frame img { 
     transition: width 1s, height, 1s, opacity 1s
+}
+
+/* powerBar */
+.powerBar {
+    
+}
+
+.powerBar div {
+    display: flex;
+    gap: 3vw;
+}
+
+.powerbar div {
+    flex-basis: 50%;
+}
+
+.powerBar div section img {
+    max-height: 100px;
+}
+
+.powerBar div section img:hover {
+    filter: brightness(75%)
+}
+
+.powerBar div section p {
+    max-width: 100px;
+    background-color: green;
+}
+
+#ua-neeg {
+    border: 5px solid red;
+}
+
+#poj-dab {
+    border: 5px solid blue;
+}
+
+#strawhat-tracker {
+    border: 5px solid purple;
+}
+
+#rice-blessing {
+    border: 5px solid white;
+}
+
+.powerBar h1 {
+    text-align: center;
+    filter: drop-shadow(0 1px 0.1rem black);
 }
