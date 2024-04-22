@@ -18,7 +18,7 @@ body {
     overflow: hidden;
 }
 
-#game, #chooseCharacter{
+#intro, #chooseCharacter, #boatSelection{
     visibility: hidden;
 }
 
@@ -442,5 +442,5 @@ li:nth-of-type(1), li:nth-of-type(3) {
 }
 
 #chooseCharacter, #frame, #frame img { 
-    transition: 1s all;
+    transition: width 1s, height, 1s, opacity 1s
 }
