@@ -216,7 +216,29 @@ for (let alpha of alphabet) { // Create sqIndex variable
 
 // Game Essential Funcs
 const gameConsole = document.getElementById('gameConsole');
-function consoleOutput(msg) {
+async function consoleOutput(msg) {
+    let prevMsg = gameConsole.innerHTML;
+
+    if (msg === prevMsg) return;
+
+    prevMsg = [...prevMsg];
+    
+    let ttc = 200;
+    let del = ttc/(msg.length+prevMsg.length);
+    
+    for (let i = prevMsg.length-1; i>0; i--) {
+        prevMsg.pop()
+        gameConsole.innerHTML = prevMsg.join("");
+        await delay(del)
+    }
+
+    let msgArr = [];
+    for (let i = 0; i<msg.length; i++) {
+        msgArr.push(msg[i]);
+        gameConsole.innerHTML = msgArr.join("");
+        await delay(del)
+    }
+
     gameConsole.innerHTML = msg;
 };
 
