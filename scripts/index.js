@@ -222,10 +222,10 @@ async function consoleOutput(msg) {
     // if (msg === prevMsg) return;
 
     // prevMsg = [...prevMsg];
-    
+
     // let ttc = 200;
     // let del = ttc/(msg.length+prevMsg.length);
-    
+
     // for (let i = prevMsg.length-1; i>0; i--) {
     //     prevMsg.pop()
     //     gameConsole.innerHTML = prevMsg.join("");
@@ -357,7 +357,7 @@ const boatIndex = {
 // Square Selection
 let sqsSelected = []
 let unchoosableSqs = []
-let findSq = {}; 
+let findSq = {};
 let ongoingTurn = false;
 let attackedSqs = {
     1: [],
@@ -370,9 +370,9 @@ let attackedSqs = {
 
 let boatPositions = {
     1: { // player
-        'basket': [], // sqsList
-        'bamboo': [],
-        'fishing': [],
+        'basket': [['A1'], ['A3'], ['A5']],
+        'bamboo': [['C1', 'C2', 'C3'], ['E1', 'E2', 'E3']],
+        'fishing': [['H1', 'H2', 'H3', 'H4']],
     },
 
     2: {
@@ -382,44 +382,65 @@ let boatPositions = {
     }
 }
 
-let attackedPositions = {
-    1: [],
+let savedPlrPos = {
+    1: [], // [sq, successful (boolean)]
     2: []
 }
 
 for (let alpha of alphabet) {
     for (let sq of rowsIndex[alpha].children) {
         sq.onclick = function () {
-             sqSelect(sq.id);
+            sqSelect(sq.id);
         }
     }
 }
 
 async function sqSelect(sq) {
-    if (gamePhase === 2 && ongoingTurn==false) {
-        const attackedPlrPos = attackedPositions[playerIdTurn];
-        if (attackedPlrPos.includes(sq)) return;
-        
+    if (gamePhase === 2 && ongoingTurn == false) {
+        const plrPos = savedPlrPos[playerIdTurn];
+        if (plrPos.includes(sq)) return;
+
         ongoingTurn = true;
-        
-        attackedPlrPos.push(sq);
+
+        plrPos.push([sq, isBoatHere(sq)]);
 
         if (isBoatHere(sq)) {
             sqIndex[sq].style.backgroundColor = 'red';
-            consoleOutput(`P${playerIdTurn}: Nice attack! You got a boat!`)
+            consoleOutput(`P${playerIdTurn} TURN: Nice attack! You got a boat!`)
+
+            await delay(1000)
+
+            if (hasPlayerWon(playerIdTurn)) {
+                gamePhase = 3;
+                const vicScreen = document.querySelector('#victoryScreen')
+                const h1 = document.querySelector('#victoryScreen h1')
+                game.remove();
+                h1.innerHTML = `Player ${playerIdTurn} won the game!`
+                vicScreen.style.visibility = 'visible'
+                return;
+            }
+            
+            consoleOutput(`P${playerIdTurn} TURN: Keep going!`)
+            
+
+            
         } else {
             sqIndex[sq].style.backgroundColor = 'grey';
-            consoleOutput(`P${playerIdTurn}: You found NO boats here. :(`)
+            consoleOutput(`P${playerIdTurn} TURN: You found NO boats here. :(`)
+
+            await delay(1000)
+
+            let newPlr = playerIdTurn == 1 ? 2 : 1;
+
+            generateSqs(newPlr)
+
+            playerIdTurn = newPlr
+
+            consoleOutput(`P${playerIdTurn} TURN: Your turn! Attack as you please!`)
         }
 
-        await delay(1000)
-
-        playerIdTurn = playerIdTurn==1 ? 2 : 1;
-
-        consoleOutput(`P${playerIdTurn}: Your turn! Attack as you please!`)
-
         ongoingTurn = false;
-        
+
         return;
     }
 
@@ -470,12 +491,12 @@ async function sqSelect(sq) {
 }
 
 function isBoatHere(sq) {
-    const playerToAttack = playerIdTurn===1 ? 2 : 1
+    const playerToAttack = playerIdTurn === 1 ? 2 : 1
     const boatPosDir = boatPositions[playerToAttack];
     for (const [key, value] of Object.entries(boatPosDir)) { // [key, value] of Object.entries(list)
         for (let sqArr of value) {
             for (let sqOfArr of sqArr) {
-                if (sqOfArr===sq) return true;
+                if (sqOfArr === sq) return true;
             }
         }
     }
@@ -495,6 +516,54 @@ function isBoatHere(sq) {
 //     return;
 // }
 
+function arraysEqual(a, b) {
+    a.sort();
+    b.sort();
+    if (a === b) return true;
+    if (a == null || b == null) return false;
+    if (a.length !== b.length) return false;
+  
+    // If you don't care about the order of the elements inside
+    // the array, you should sort both arrays here.
+    // Please note that calling sort on an array will modify that array.
+    // you might want to clone your array first.
+  
+    for (var i = 0; i < a.length; ++i) {
+      if (a[i] !== b[i]) return false;
+    }
+    return true;
+  }
+
+function hasPlayerWon(plrId) {
+    let succBoatSqs = [];
+    let otherPlrBoats = [];
+    for (let sqTable of savedPlrPos[plrId]) {
+        if (sqTable[1] === true) succBoatSqs.push(sqTable[0]);
+    };
+
+    for (const [key, value] of Object.entries(boatPositions[plrId===1 ? 2 : 1])) {
+        for (let sqSet of value) {
+            for (let sq of sqSet) {
+                otherPlrBoats.push(sq)
+            }
+        }
+    }
+    
+    return arraysEqual(succBoatSqs, otherPlrBoats)
+}
+
+function generateSqs(plrId) {
+    const plrPos = savedPlrPos[plrId];
+    for (const [key2, sq] of Object.entries(sqIndex)) {
+        sqIndex[key2].style.backgroundColor = 'white'
+    }
+    console.log(plrPos)
+    if (plrPos.length < 1) return;
+    for (let sqTabl of plrPos) {
+        sqIndex[sqTabl[0]].style.backgroundColor = sqTabl[1] === true ? "red" : "grey"
+    }
+}
+
 function sqAlrSelected(sq) {
     const found = sqsSelected.find((rSq) => rSq === sq)
     if (found) return sqsSelected.indexOf(found);
@@ -505,7 +574,7 @@ function resetSqSelect(boatDirectory) {
     for (sq of sqsSelected) {
         sq = sqIndex[sq].style.backgroundColor = 'white';
     }
-    
+
     sqsSelected = [];
 
     if (boatDirectory) {
@@ -529,7 +598,7 @@ function resetSqSelect(boatDirectory) {
         boatIndex[selectedBoat].style.border = 'none'
         consoleOutput(`P${playerIdTurn} TURN: YOU HAVE PLACED ${selectedBoat} (${boatDirectory.length}/${maxBoats}) BOAT. CHOOSE YOUR NEXT BOAT!`);
         selectedBoat = null;
-    }   
+    }
 
     // When player is done selecting ALL boats
     if ((getRemainingBoats('basket') === 0) && (getRemainingBoats('bamboo') === 0) && (getRemainingBoats('fishing') === 0)) {
@@ -561,11 +630,11 @@ function resetSqSelect(boatDirectory) {
 
             switchToCharBar(barId);
         }
-     }
+    }
 }
 
 function switchToCharBar(targetBarId) {
-    let otherCharBarId = (targetBarId==='shamanPowerBar') ? "riceFarmerPowerBar" : "shamanPowerBar";
+    let otherCharBarId = (targetBarId === 'shamanPowerBar') ? "riceFarmerPowerBar" : "shamanPowerBar";
     let otherCharBar = document.getElementById(otherCharBarId)
 
     let targetBar = document.getElementById(targetBarId);
@@ -601,7 +670,7 @@ function getMaxBoats(boatType) {
 
 function getRemainingBoats(boatType) {
     let maxAllowedBoat = getMaxBoats(boatType);
-    return boatPositions[playerIdTurn][boatType].length-maxAllowedBoat;
+    return boatPositions[playerIdTurn][boatType].length - maxAllowedBoat;
 }
 
 // findSq.top,       findSq.left,    findSq.right,       findSq.bottom, 
@@ -610,13 +679,13 @@ function getRemainingBoats(boatType) {
 // const alphabet
 
 function alphaFind(letter, offset) { // returns the letter based off offset. (e.g letter = 'B', offset = 1, returns C)
-    const nextAlpha = alphabet[alphabet.indexOf(letter)+offset]
+    const nextAlpha = alphabet[alphabet.indexOf(letter) + offset]
     if (!nextAlpha) return letter
     return nextAlpha;
 }
 
 function numberFind(number, offset) {
-    const nextNumber = parseInt(number)+offset;
+    const nextNumber = parseInt(number) + offset;
     if ((nextNumber > 9) || (nextNumber < 1)) return number;
     return nextNumber;
 }
