@@ -217,33 +217,34 @@ for (let alpha of alphabet) { // Create sqIndex variable
 // Game Essential Funcs
 const gameConsole = document.getElementById('gameConsole');
 async function consoleOutput(msg) {
-    let prevMsg = gameConsole.innerHTML;
+    // let prevMsg = gameConsole.innerHTML;
 
-    if (msg === prevMsg) return;
+    // if (msg === prevMsg) return;
 
-    prevMsg = [...prevMsg];
+    // prevMsg = [...prevMsg];
     
-    let ttc = 200;
-    let del = ttc/(msg.length+prevMsg.length);
+    // let ttc = 200;
+    // let del = ttc/(msg.length+prevMsg.length);
     
-    for (let i = prevMsg.length-1; i>0; i--) {
-        prevMsg.pop()
-        gameConsole.innerHTML = prevMsg.join("");
-        await delay(del)
-    }
+    // for (let i = prevMsg.length-1; i>0; i--) {
+    //     prevMsg.pop()
+    //     gameConsole.innerHTML = prevMsg.join("");
+    //     await delay(del)
+    // }
 
-    let msgArr = [];
-    for (let i = 0; i<msg.length; i++) {
-        msgArr.push(msg[i]);
-        gameConsole.innerHTML = msgArr.join("");
-        await delay(del)
-    }
+    // let msgArr = [];
+    // for (let i = 0; i<msg.length; i++) {
+    //     msgArr.push(msg[i]);
+    //     gameConsole.innerHTML = msgArr.join("");
+    //     await delay(del)
+    // }
 
     gameConsole.innerHTML = msg;
 };
 
 // Game Handler
 let playerIdTurn = 1; // 1 = player 1, 2 = player 2
+let gamePhase = 2; // 1 = choosing boats, 2 = attacking boats, 3 = victory
 
 let boatSelected = null; // == & === null is true
 
@@ -357,6 +358,11 @@ const boatIndex = {
 let sqsSelected = []
 let unchoosableSqs = []
 let findSq = {}; 
+let ongoingTurn = false;
+let attackedSqs = {
+    1: [],
+    2: [],
+};
 // findSq.top,       findSq.left,    findSq.right,       findSq.bottom, 
 // findSq.topRight, findSq.topLeft, findSq.bottomLeft, findSq.bottomRight
 
@@ -370,21 +376,53 @@ let boatPositions = {
     },
 
     2: {
-        'basket': [],
-        'bamboo': [],
-        'fishing': [],
+        'basket': [['A1'], ['A3'], ['A5']],
+        'bamboo': [['C1', 'C2', 'C3'], ['E1', 'E2', 'E3']],
+        'fishing': [['H1', 'H2', 'H3', 'H4']],
     }
+}
+
+let attackedPositions = {
+    1: [],
+    2: []
 }
 
 for (let alpha of alphabet) {
     for (let sq of rowsIndex[alpha].children) {
         sq.onclick = function () {
-            if (selectedBoat) sqSelect(sq.id);
+             sqSelect(sq.id);
         }
     }
 }
 
-function sqSelect(sq) {
+async function sqSelect(sq) {
+    if (gamePhase === 2 && ongoingTurn==false) {
+        const attackedPlrPos = attackedPositions[playerIdTurn];
+        if (attackedPlrPos.includes(sq)) return;
+        
+        ongoingTurn = true;
+        
+        attackedPlrPos.push(sq);
+
+        if (isBoatHere(sq)) {
+            sqIndex[sq].style.backgroundColor = 'red';
+            consoleOutput(`P${playerIdTurn}: Nice attack! You got a boat!`)
+        } else {
+            sqIndex[sq].style.backgroundColor = 'grey';
+            consoleOutput(`P${playerIdTurn}: You found NO boats here. :(`)
+        }
+
+        await delay(1000)
+
+        playerIdTurn = playerIdTurn==1 ? 2 : 1;
+
+        consoleOutput(`P${playerIdTurn}: Your turn! Attack as you please!`)
+
+        ongoingTurn = false;
+        
+        return;
+    }
+
     if ((selectedBoat == null) || (unchoosableSqs.includes(sq))) return;
 
     const isAlrSelected = sqAlrSelected(sq)
@@ -429,6 +467,19 @@ function sqSelect(sq) {
 
         resetSqSelect(boatDirectory)
     }
+}
+
+function isBoatHere(sq) {
+    const playerToAttack = playerIdTurn===1 ? 2 : 1
+    const boatPosDir = boatPositions[playerToAttack];
+    for (const [key, value] of Object.entries(boatPosDir)) { // [key, value] of Object.entries(list)
+        for (let sqArr of value) {
+            for (let sqOfArr of sqArr) {
+                if (sqOfArr===sq) return true;
+            }
+        }
+    }
+    return false
 }
 
 // // if there was a previously selected boat, deselect it.
@@ -506,7 +557,9 @@ function resetSqSelect(boatDirectory) {
 
             boatSelection.remove();
 
-            switchToCharBar(barId)
+            gamePhase = 2;
+
+            switchToCharBar(barId);
         }
      }
 }

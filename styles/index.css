@@ -18,12 +18,19 @@ body {
     overflow: hidden;
 }
 
-#intro, #chooseCharacter {
+#intro, #chooseCharacter, #boatSelection {
     visibility: hidden;
+    display: none !important; 
 }
 
-.powerBar{
-    display: none !important;
+.powerBar { 
+    visibility: hidden;
+    display: none
+}
+
+#shamanPowerBar {
+    visibility: visible;
+    display: block;
 }
 
 /* required */
