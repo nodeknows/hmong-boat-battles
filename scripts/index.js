@@ -244,7 +244,7 @@ async function consoleOutput(msg) {
 
 // Game Handler
 let playerIdTurn = 1; // 1 = player 1, 2 = player 2
-let gamePhase = 2; // 1 = choosing boats, 2 = attacking boats, 3 = victory
+let gamePhase = 1; // 1 = choosing boats, 2 = attacking boats, 3 = victory
 
 let boatSelected = null; // == & === null is true
 
@@ -369,17 +369,29 @@ let attackedSqs = {
 // BOATS ALLOWED PER PLAYER: basket (3), bamboo (2), fishing (1)
 
 let boatPositions = {
-    1: { // player
-        'basket': [['A1'], ['A3'], ['A5']],
-        'bamboo': [['C1', 'C2', 'C3'], ['E1', 'E2', 'E3']],
-        'fishing': [['H1', 'H2', 'H3', 'H4']],
-    },
+    // 1: { // player
+    //     'basket': [['A1'], ['A3'], ['A5']],
+    //     'bamboo': [['C1', 'C2', 'C3'], ['E1', 'E2', 'E3']],
+    //     'fishing': [['H1', 'H2', 'H3', 'H4']],
+    // },
 
-    2: {
-        'basket': [['A1'], ['A3'], ['A5']],
-        'bamboo': [['C1', 'C2', 'C3'], ['E1', 'E2', 'E3']],
-        'fishing': [['H1', 'H2', 'H3', 'H4']],
-    }
+    // 2: {
+    //     'basket': [['A1'], ['A3'], ['A5']],
+    //     'bamboo': [['C1', 'C2', 'C3'], ['E1', 'E2', 'E3']],
+    //     'fishing': [['H1', 'H2', 'H3', 'H4']],
+    // }
+    
+    1: {
+         'basket' : [],
+         'bamboo' : [],
+         'fishing' : []
+     },
+
+     2: {
+         'basket' : [],
+         'bamboo' : [],
+         'fishing' : []
+     }
 }
 
 let savedPlrPos = {
@@ -398,7 +410,13 @@ for (let alpha of alphabet) {
 async function sqSelect(sq) {
     if (gamePhase === 2 && ongoingTurn == false) {
         const plrPos = savedPlrPos[playerIdTurn];
-        if (plrPos.includes(sq)) return;
+
+        // check if that player already selected that square
+        for (let sqTable of plrPos) {
+            if (sqTable.includes(sq)) {
+                return;
+            }
+        }
 
         ongoingTurn = true;
 
@@ -413,9 +431,9 @@ async function sqSelect(sq) {
             if (hasPlayerWon(playerIdTurn)) {
                 gamePhase = 3;
                 const vicScreen = document.querySelector('#victoryScreen')
-                const h1 = document.querySelector('#victoryScreen h1')
+                const pElem = document.querySelector('#victoryScreen p')
                 game.remove();
-                h1.innerHTML = `Player ${playerIdTurn} won the game!`
+                pElem.innerHTML = `Player ${playerIdTurn} won the game!`
                 vicScreen.style.visibility = 'visible'
                 return;
             }
@@ -557,7 +575,6 @@ function generateSqs(plrId) {
     for (const [key2, sq] of Object.entries(sqIndex)) {
         sqIndex[key2].style.backgroundColor = 'white'
     }
-    console.log(plrPos)
     if (plrPos.length < 1) return;
     for (let sqTabl of plrPos) {
         sqIndex[sqTabl[0]].style.backgroundColor = sqTabl[1] === true ? "red" : "grey"
@@ -668,7 +685,7 @@ function getMaxBoats(boatType) {
     return maxAllowedBoat;
 }
 
-function getRemainingBoats(boatType) {
+function getRemainingBoats(boatType) { 
     let maxAllowedBoat = getMaxBoats(boatType);
     return boatPositions[playerIdTurn][boatType].length - maxAllowedBoat;
 }

@@ -18,31 +18,6 @@ body {
     overflow: hidden;
 }
 
-/* #intro, #chooseCharacter, #boatSelection, #victoryScreen{
-    visibility: hidden;
-    display: none !important; 
-}
-
-.powerBar { 
-    visibility: hidden;
-    display: none
-}
-
-#shamanPowerBar {
-    visibility: visible;
-    display: block;
-} */
-
-/* required */
-#game, #chooseCharacter, #victoryScreen {
-    visibility: hidden;
-}
-
-.powerBar { 
-    visibility: hidden;
-    display: none
-}
-
 /* header/footer */
 header {
     background-color: #4f4f4f;
@@ -532,4 +507,29 @@ li:nth-of-type(1), li:nth-of-type(3) {
     font-size: 2rem;
 
     gap: 2vh;
+}
+
+/* DEBUG */
+/* #intro, #chooseCharacter, #victoryScreen, #boatSelection{
+    visibility: hidden;
+}
+
+.powerBar { 
+    visibility: hidden;
+    display: none
+}
+
+#shamanPowerBar {
+    visibility: visible;
+    display: block;
+} */
+
+/* required */
+#game, #chooseCharacter, #victoryScreen{
+    visibility: hidden;
+}
+
+.powerBar { 
+    visibility: hidden;
+    display: none
 }
