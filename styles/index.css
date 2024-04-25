@@ -525,11 +525,30 @@ li:nth-of-type(1), li:nth-of-type(3) {
 } */
 
 /* required */
-#game, #chooseCharacter, #victoryScreen{
+/* #game, #chooseCharacter, #victoryScreen{
     visibility: hidden;
 }
 
 .powerBar { 
     visibility: hidden;
     display: none
+} */
+
+#intro, #chooseCharacter, #victoryScreen, #boatSelection {
+    visibility: hidden;
+    display: none;
+}
+
+.powerBar {
+    visibility: hidden;
+    display: none;
+}
+
+#shamanPowerBar {
+    visibility: visible;
+    display: block;
+}
+
+.hidden {
+    position: absolute;
 }

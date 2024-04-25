@@ -83,6 +83,10 @@ let playerSelectingChar = 1;
 
 var playerCharacters = [];
 
+//debug
+playerCharacters[1] = 'shaman';
+playerCharacters[2] = 'riceFarmer'
+
 const chooseCharSec = document.getElementById('chooseCharacter');
 const shaman = document.querySelector('#shaman');
 const riceFarmer = document.querySelector('#riceFarmer');
@@ -244,7 +248,7 @@ async function consoleOutput(msg) {
 
 // Game Handler
 let playerIdTurn = 1; // 1 = player 1, 2 = player 2
-let gamePhase = 1; // 1 = choosing boats, 2 = attacking boats, 3 = victory
+let gamePhase = 2; // 1 = choosing boats, 2 = attacking boats, 3 = victory
 
 let boatSelected = null; // == & === null is true
 
@@ -355,10 +359,12 @@ const boatIndex = {
 }
 
 // Square Selection
+let turnCount = 1;
 let sqsSelected = []
 let unchoosableSqs = []
 let findSq = {};
 let ongoingTurn = false;
+let activePowerup = null;
 let attackedSqs = {
     1: [],
     2: [],
@@ -380,23 +386,45 @@ let boatPositions = {
     //     'bamboo': [['C1', 'C2', 'C3'], ['E1', 'E2', 'E3']],
     //     'fishing': [['H1', 'H2', 'H3', 'H4']],
     // }
-    
-    1: {
-         'basket' : [],
-         'bamboo' : [],
-         'fishing' : []
-     },
 
-     2: {
-         'basket' : [],
-         'bamboo' : [],
-         'fishing' : []
-     }
+    1: {
+        'basket': [],
+        'bamboo': [],
+        'fishing': []
+    },
+
+    2: {
+        'basket': [],
+        'bamboo': [],
+        'fishing': []
+    }
 }
 
 let savedPlrPos = {
     1: [], // [sq, successful (boolean)]
     2: []
+}
+
+let powerupProperties = {
+    'flying-strawhat': {
+        toCooldown: 2,
+        currentCooldown: 0,
+    },
+
+    'rice-blessing': {
+        toCooldown: 3,
+        currentCooldown: 0,
+    },
+
+    'spirit-bomb': {
+        toCooldown: 3,
+        currentCooldown: 0,
+    },
+
+    'jingle-bell': {
+        toCooldown: 2,
+        currentCooldown: 0,
+    },
 }
 
 for (let alpha of alphabet) {
@@ -409,7 +437,10 @@ for (let alpha of alphabet) {
 
 async function sqSelect(sq) {
     if (gamePhase === 2 && ongoingTurn == false) {
+
         const plrPos = savedPlrPos[playerIdTurn];
+        let successfulAtt = false;
+        let pwrUpProp = powerupProperties[activePowerup];
 
         // check if that player already selected that square
         for (let sqTable of plrPos) {
@@ -418,12 +449,65 @@ async function sqSelect(sq) {
             }
         }
 
+        // if a powerup is on cooldown, reduce it by one turn
+        for (const [key, pwrUp] of Object.entries(powerupProperties)) {
+            if (pwrUp.currentCooldown !== 0) {
+                pwrUp.currentCooldown--;
+            };
+        };
+
         ongoingTurn = true;
 
-        plrPos.push([sq, isBoatHere(sq)]);
+        turnCount++
 
-        if (isBoatHere(sq)) {
-            sqIndex[sq].style.backgroundColor = 'red';
+        if (activePowerup === 'jingle-bell') {
+            console.log('Jingle Bell ATT')
+            let found = [
+                isBoatHere(findSq.left(sq)), 
+                isBoatHere(findSq.top(sq)),
+                isBoatHere(findSq.right(sq)),
+                isBoatHere(findSq.bottom(sq)),
+                isBoatHere(sq)
+            ] //successfulAtt
+            plrPos.push([findSq.left(sq), found[0]]);
+            plrPos.push([findSq.top(sq), found[1]]);
+            plrPos.push([findSq.right(sq), found[2]]);
+            plrPos.push([findSq.bottom(sq), found[3]]);
+            plrPos.push([sq, found[4]]);
+
+            successfulAtt = (found[0] || found[1] || found[2] || found[3] || found[4])
+        } else {
+            let found = isBoatHere(sq)
+            plrPos.push([sq, found]);
+            successfulAtt = found;
+        }
+
+        if (activePowerup === 'spirit-bomb') {
+            console.log('Jingle-Bell ATT');
+        }
+
+        if (successfulAtt) {
+            console.log('Successful ATT')
+
+            sqIndex[sq].style.backgroundColor = 'green';
+
+            if (activePowerup === 'jingle-bell') {
+                if (isBoatHere(findSq.left(sq))) {
+                    sqIndex[findSq.left(sq)].style.backgroundColor = 'green';
+                }
+                if (isBoatHere(findSq.right(sq))) {
+                    sqIndex[findSq.right(sq)].style.backgroundColor = 'green';
+                }
+                if (isBoatHere(findSq.top(sq))) {
+                    sqIndex[findSq.top(sq)].style.backgroundColor = 'green';
+                }
+                if (isBoatHere(findSq.bottom(sq))) {
+                    sqIndex[findSq.bottom(sq)].style.backgroundColor = 'green';
+                }
+                pwrUpProp.currentCooldown = pwrUpProp.toCooldown
+                cooldownAttack(activePowerup, pwrUpProp.toCooldown)
+            }
+
             consoleOutput(`P${playerIdTurn} TURN: Nice attack! You got a boat!`)
 
             await delay(1000)
@@ -437,13 +521,33 @@ async function sqSelect(sq) {
                 vicScreen.style.visibility = 'visible'
                 return;
             }
-            
-            consoleOutput(`P${playerIdTurn} TURN: Keep going!`)
-            
 
-            
+            consoleOutput(`P${playerIdTurn} TURN: Keep going!`)
+
+
+
         } else {
+            console.log('Failed ATT')
+
             sqIndex[sq].style.backgroundColor = 'grey';
+
+            if (activePowerup === 'jingle-bell') {
+                if (!isBoatHere(findSq.left(sq))) {
+                    sqIndex[findSq.left(sq)].style.backgroundColor = 'grey';
+                }
+                if (!isBoatHere(findSq.right(sq))) {
+                    sqIndex[findSq.right(sq)].style.backgroundColor = 'grey';
+                }
+                if (!isBoatHere(findSq.top(sq))) {
+                    sqIndex[findSq.top(sq)].style.backgroundColor = 'grey';
+                }
+                if (!isBoatHere(findSq.bottom(sq))) {
+                    sqIndex[findSq.bottom(sq)].style.backgroundColor = 'grey';
+                }
+                pwrUpProp.currentCooldown = pwrUpProp.toCooldown
+                cooldownAttack(activePowerup, pwrUpProp.toCooldown)
+            }
+
             consoleOutput(`P${playerIdTurn} TURN: You found NO boats here. :(`)
 
             await delay(1000)
@@ -453,9 +557,16 @@ async function sqSelect(sq) {
             generateSqs(newPlr)
 
             playerIdTurn = newPlr
+            charBarId = playerCharacters[playerIdTurn]=='shaman' ? 'shamanPowerBar' : 'riceFarmerPowerBar'
+
+            console.log(charBarId)
+
+            switchToCharBar(charBarId)
 
             consoleOutput(`P${playerIdTurn} TURN: Your turn! Attack as you please!`)
         }
+
+        console.log('Turn: ' + turnCount)
 
         ongoingTurn = false;
 
@@ -540,17 +651,17 @@ function arraysEqual(a, b) {
     if (a === b) return true;
     if (a == null || b == null) return false;
     if (a.length !== b.length) return false;
-  
+
     // If you don't care about the order of the elements inside
     // the array, you should sort both arrays here.
     // Please note that calling sort on an array will modify that array.
     // you might want to clone your array first.
-  
+
     for (var i = 0; i < a.length; ++i) {
-      if (a[i] !== b[i]) return false;
+        if (a[i] !== b[i]) return false;
     }
     return true;
-  }
+}
 
 function hasPlayerWon(plrId) {
     let succBoatSqs = [];
@@ -559,14 +670,14 @@ function hasPlayerWon(plrId) {
         if (sqTable[1] === true) succBoatSqs.push(sqTable[0]);
     };
 
-    for (const [key, value] of Object.entries(boatPositions[plrId===1 ? 2 : 1])) {
+    for (const [key, value] of Object.entries(boatPositions[plrId === 1 ? 2 : 1])) {
         for (let sqSet of value) {
             for (let sq of sqSet) {
                 otherPlrBoats.push(sq)
             }
         }
     }
-    
+
     return arraysEqual(succBoatSqs, otherPlrBoats)
 }
 
@@ -687,7 +798,7 @@ function getMaxBoats(boatType) {
     return maxAllowedBoat;
 }
 
-function getRemainingBoats(boatType) { 
+function getRemainingBoats(boatType) {
     let maxAllowedBoat = getMaxBoats(boatType);
     return boatPositions[playerIdTurn][boatType].length - maxAllowedBoat;
 }
@@ -749,3 +860,57 @@ findSq.bottomRight = function (sq) {
 
 // FOR-LOOPS LIST NOTE:
 // [key, value] of Object.entries(list)
+
+// Powerups Handler
+for (let attElem of document.querySelectorAll('.attack')) {
+    let id = attElem.classList[0];
+    let statusElem = game.querySelector(`.${id} + p`)
+    attElem.onclick = function () {
+        if (statusElem.innerHTML === 'READY TO USE' && activePowerup===null && ongoingTurn===false) {
+
+            activePowerup = id;
+
+            statusElem.innerHTML = 'ACTIVE';
+            statusElem.style.background = 'orange';
+
+        };
+    };
+};
+
+
+
+async function cooldownAttack(attackClass, cooldownRate) { // 'rice-blessing', '2' <-- how much turns until we turn it to green again 
+    let attElem = document.querySelector(`.${attackClass} + p`);
+    let pwrUpProp = powerupProperties[attackClass];
+
+    activePowerup = null;
+
+    attElem.innerHTML = `WAIT FOR ${pwrUpProp.currentCooldown} TURNS`
+    attElem.style.backgroundColor = 'red'
+
+    let id = setInterval(function(){ // check every .5s to see if the cooldown is done
+        attElem.innerHTML = `WAIT FOR ${pwrUpProp.currentCooldown} TURNS`
+        if (pwrUpProp.currentCooldown===0) {
+            resetAttack(attackClass);
+            clearInterval(id)
+            
+        };
+    }, 500);
+}
+
+function resetAttack(attackClass) {
+    let attElem = document.querySelector(`.${attackClass} + p`);
+
+    attElem.innerHTML = 'READY TO USE';
+    attElem.style.backgroundColor = 'green';
+}
+
+// let i = 0
+
+// let id = setInterval(function () {
+//     console.log(id)
+//     if (i === 3) clearInterval(id);
+//     i++
+// }, 1000)
+
+// console.log('done')
