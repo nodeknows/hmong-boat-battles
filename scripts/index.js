@@ -629,6 +629,8 @@ function resetSqSelect(boatDirectory) {
             let barId;
             let charName;
 
+            playerIdTurn = 1;
+
             if (playerCharacters[playerIdTurn] === 'shaman') {
                 barId = 'shamanPowerBar';
                 charName = 'Shaman'
