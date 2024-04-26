@@ -495,6 +495,8 @@ async function sqSelect(sq) {
                     game.remove();
                     pElem.innerHTML = `Player ${playerIdTurn} won the game!`
                     vicScreen.style.visibility = 'visible'
+                    vicScreen.style.display = 'flex';
+                    return;
                 }
             } else {
                 console.log('Failed ATT')
@@ -610,6 +612,7 @@ async function sqSelect(sq) {
                 game.remove();
                 pElem.innerHTML = `Player ${playerIdTurn} won the game!`
                 vicScreen.style.visibility = 'visible'
+                vicScreen.style.display = 'flex';
                 return;
             }
 
