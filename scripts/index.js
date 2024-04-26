@@ -84,8 +84,8 @@ let playerSelectingChar = 1;
 var playerCharacters = [];
 
 //debug
-playerCharacters[1] = 'shaman';
-playerCharacters[2] = 'riceFarmer'
+playerCharacters[2] = 'shaman';
+playerCharacters[1] = 'riceFarmer'
 
 const chooseCharSec = document.getElementById('chooseCharacter');
 const shaman = document.querySelector('#shaman');
@@ -248,7 +248,7 @@ async function consoleOutput(msg) {
 
 // Game Handler
 let playerIdTurn = 1; // 1 = player 1, 2 = player 2
-let gamePhase = 2; // 1 = choosing boats, 2 = attacking boats, 3 = victory
+let gamePhase = 1; // 1 = choosing boats, 2 = attacking boats, 3 = victory
 
 let boatSelected = null; // == & === null is true
 
@@ -364,13 +364,16 @@ let sqsSelected = []
 let unchoosableSqs = []
 let findSq = {};
 let ongoingTurn = false;
-let activePowerup = null;
+let activePowerup = [];
 let attackedSqs = {
     1: [],
     2: [],
 };
 // findSq.top,       findSq.left,    findSq.right,       findSq.bottom, 
 // findSq.topRight, findSq.topLeft, findSq.bottomLeft, findSq.bottomRight
+
+activePowerup[1] = null;
+activePowerup[2] = null;
 
 // BOATS ALLOWED PER PLAYER: basket (3), bamboo (2), fishing (1)
 
@@ -385,7 +388,7 @@ let boatPositions = {
     //     'basket': [['A1'], ['A3'], ['A5']],
     //     'bamboo': [['C1', 'C2', 'C3'], ['E1', 'E2', 'E3']],
     //     'fishing': [['H1', 'H2', 'H3', 'H4']],
-    // }
+    // },
 
     1: {
         'basket': [],
@@ -407,22 +410,22 @@ let savedPlrPos = {
 
 let powerupProperties = {
     'flying-strawhat': {
-        toCooldown: 2,
+        toCooldown: 3,
         currentCooldown: 0,
     },
 
     'rice-blessing': {
-        toCooldown: 3,
+        toCooldown: 4,
         currentCooldown: 0,
     },
 
     'spirit-bomb': {
-        toCooldown: 3,
+        toCooldown: 4,
         currentCooldown: 0,
     },
 
     'jingle-bell': {
-        toCooldown: 2,
+        toCooldown: 3,
         currentCooldown: 0,
     },
 }
@@ -435,12 +438,14 @@ for (let alpha of alphabet) {
     }
 }
 
+let turnMultiplier = 0;
+
 async function sqSelect(sq) {
     if (gamePhase === 2 && ongoingTurn == false) {
 
         const plrPos = savedPlrPos[playerIdTurn];
         let successfulAtt = false;
-        let pwrUpProp = powerupProperties[activePowerup];
+        let pwrUpProp = powerupProperties[activePowerup[playerIdTurn]];
 
         // check if that player already selected that square
         for (let sqTable of plrPos) {
@@ -449,21 +454,12 @@ async function sqSelect(sq) {
             }
         }
 
-        // if a powerup is on cooldown, reduce it by one turn
-        for (const [key, pwrUp] of Object.entries(powerupProperties)) {
-            if (pwrUp.currentCooldown !== 0) {
-                pwrUp.currentCooldown--;
-            };
-        };
-
         ongoingTurn = true;
 
-        turnCount++
-
-        if (activePowerup === 'jingle-bell') {
+        if (activePowerup[playerIdTurn] === 'jingle-bell') {
             console.log('Jingle Bell ATT')
             let found = [
-                isBoatHere(findSq.left(sq)), 
+                isBoatHere(findSq.left(sq)),
                 isBoatHere(findSq.top(sq)),
                 isBoatHere(findSq.right(sq)),
                 isBoatHere(findSq.bottom(sq)),
@@ -476,36 +472,131 @@ async function sqSelect(sq) {
             plrPos.push([sq, found[4]]);
 
             successfulAtt = (found[0] || found[1] || found[2] || found[3] || found[4])
+            console.log(successfulAtt)
+        } else if (activePowerup[playerIdTurn] === 'spirit-bomb') {
+            if (turnMultiplier === 0) {
+                turnMultiplier = 3;
+            }
+            let found = isBoatHere(sq)
+            plrPos.push([sq, found]);
+            successfulAtt = found;
+
+            consoleOutput(`P${playerIdTurn} TURN: You have ${turnMultiplier} squares left to choose.`)
+
+            if (successfulAtt) {
+                console.log('Successful ATT');
+                sqIndex[sq].style.backgroundColor = 'green';
+                consoleOutput(`P${playerIdTurn} TURN: Nice attack! You got a boat!`)
+                await delay(1000)
+                if (hasPlayerWon(playerIdTurn)) {
+                    gamePhase = 3;
+                    const vicScreen = document.querySelector('#victoryScreen')
+                    const pElem = document.querySelector('#victoryScreen p')
+                    game.remove();
+                    pElem.innerHTML = `Player ${playerIdTurn} won the game!`
+                    vicScreen.style.visibility = 'visible'
+                }
+            } else {
+                console.log('Failed ATT')
+                sqIndex[sq].style.backgroundColor = 'grey';
+                consoleOutput(`P${playerIdTurn} TURN: You found NO boats here. :(`)
+                await delay(1000)
+            }
+
+            console.log('Turn: ' + turnCount)
+
+            turnMultiplier--
+
+            if (turnMultiplier === 0) {
+
+                pwrUpProp.currentCooldown = pwrUpProp.toCooldown
+                cooldownAttack(activePowerup[playerIdTurn], pwrUpProp.toCooldown)
+
+                let newPlr = playerIdTurn == 1 ? 2 : 1;
+
+                generateSqs(newPlr)
+
+                playerIdTurn = newPlr
+                charBarId = playerCharacters[playerIdTurn] == 'shaman' ? 'shamanPowerBar' : 'riceFarmerPowerBar'
+
+                console.log(charBarId)
+
+                switchToCharBar(charBarId)
+
+                consoleOutput(`P${playerIdTurn} TURN: Your turn! Attack as you please!`)
+            } else {
+                consoleOutput(`P${playerIdTurn} TURN: You have ${turnMultiplier} squares left to choose.`)
+            }
+
+            ongoingTurn = false;
+
+            return;
+        } if (activePowerup[playerIdTurn] === 'flying-strawhat') {
+            const randUnknownBoatSq = getUnknownBoatSq(playerIdTurn)
+
+            sqIndex[randUnknownBoatSq].style.backgroundColor = 'green'
+
+            successfulAtt = randUnknownBoatSq
+
+            plrPos.push([successfulAtt, true]);
+
+            pwrUpProp.currentCooldown = pwrUpProp.toCooldown
+
         } else {
             let found = isBoatHere(sq)
             plrPos.push([sq, found]);
             successfulAtt = found;
         }
 
-        if (activePowerup === 'spirit-bomb') {
-            console.log('Jingle-Bell ATT');
-        }
-
         if (successfulAtt) {
             console.log('Successful ATT')
 
-            sqIndex[sq].style.backgroundColor = 'green';
+            if (activePowerup[playerIdTurn] === 'flying-strawhat') {
+                cooldownAttack(activePowerup[playerIdTurn], pwrUpProp.toCooldown)
+            } else {
+                sqIndex[sq].style.backgroundColor = 'green';
+            }
 
-            if (activePowerup === 'jingle-bell') {
-                if (isBoatHere(findSq.left(sq))) {
-                    sqIndex[findSq.left(sq)].style.backgroundColor = 'green';
-                }
-                if (isBoatHere(findSq.right(sq))) {
-                    sqIndex[findSq.right(sq)].style.backgroundColor = 'green';
-                }
-                if (isBoatHere(findSq.top(sq))) {
-                    sqIndex[findSq.top(sq)].style.backgroundColor = 'green';
-                }
-                if (isBoatHere(findSq.bottom(sq))) {
-                    sqIndex[findSq.bottom(sq)].style.backgroundColor = 'green';
-                }
+            if (activePowerup[playerIdTurn] === 'jingle-bell') {
+                const left = findSq.left(sq);
+                const right = findSq.right(sq);
+                const top = findSq.top(sq);;
+                const bottom = findSq.bottom(sq);
+
+                sqIndex[left].style.backgroundColor = isBoatHere(left) ? 'green' : 'grey';
+
+                sqIndex[right].style.backgroundColor = isBoatHere(right) ? 'green' : 'grey';
+
+                sqIndex[top].style.backgroundColor = isBoatHere(top) ? 'green' : 'grey';
+
+                sqIndex[bottom].style.backgroundColor = isBoatHere(bottom) ? 'green' : 'grey';
+
                 pwrUpProp.currentCooldown = pwrUpProp.toCooldown
-                cooldownAttack(activePowerup, pwrUpProp.toCooldown)
+                cooldownAttack(activePowerup[playerIdTurn], pwrUpProp.toCooldown)
+            }
+
+            if (activePowerup[playerIdTurn] === 'rice-blessing') {
+                pwrUpProp.currentCooldown = pwrUpProp.toCooldown
+                cooldownAttack(activePowerup[playerIdTurn], pwrUpProp.toCooldown);
+                let newPlr = playerIdTurn == 1 ? 2 : 1;
+                let foundBoat = null;
+
+                loop5: for (key in boatPositions[newPlr]) {
+                    let bForBoat = boatPositions[newPlr][key]
+                    for (let sqArr of bForBoat) {
+                        for (let sqOfSqArr of sqArr) {
+                            if (sqOfSqArr === sq) {
+                                foundBoat = sqArr;
+                                break loop5;
+                            }
+                        }
+                    }
+                }
+
+                for (let sq of foundBoat) {
+                    sqIndex[sq].style.backgroundColor = 'green';
+                    plrPos.push([sq, true])
+                }
             }
 
             consoleOutput(`P${playerIdTurn} TURN: Nice attack! You got a boat!`)
@@ -531,21 +622,27 @@ async function sqSelect(sq) {
 
             sqIndex[sq].style.backgroundColor = 'grey';
 
-            if (activePowerup === 'jingle-bell') {
-                if (!isBoatHere(findSq.left(sq))) {
-                    sqIndex[findSq.left(sq)].style.backgroundColor = 'grey';
-                }
-                if (!isBoatHere(findSq.right(sq))) {
-                    sqIndex[findSq.right(sq)].style.backgroundColor = 'grey';
-                }
-                if (!isBoatHere(findSq.top(sq))) {
-                    sqIndex[findSq.top(sq)].style.backgroundColor = 'grey';
-                }
-                if (!isBoatHere(findSq.bottom(sq))) {
-                    sqIndex[findSq.bottom(sq)].style.backgroundColor = 'grey';
-                }
+            if (activePowerup[playerIdTurn] === 'jingle-bell') {
+                const left = findSq.left(sq);
+                const right = findSq.right(sq);
+                const top = findSq.top(sq);;
+                const bottom = findSq.bottom(sq);
+
+                sqIndex[left].style.backgroundColor = isBoatHere(left) ? 'green' : 'grey';
+
+                sqIndex[right].style.backgroundColor = isBoatHere(right) ? 'green' : 'grey';
+
+                sqIndex[top].style.backgroundColor = isBoatHere(top) ? 'green' : 'grey';
+
+                sqIndex[bottom].style.backgroundColor = isBoatHere(bottom) ? 'green' : 'grey';
+
                 pwrUpProp.currentCooldown = pwrUpProp.toCooldown
-                cooldownAttack(activePowerup, pwrUpProp.toCooldown)
+                cooldownAttack(activePowerup[playerIdTurn], pwrUpProp.toCooldown)
+            }
+
+            if (activePowerup[playerIdTurn] === 'rice-blessing') {
+                pwrUpProp.currentCooldown = pwrUpProp.toCooldown
+                cooldownAttack(activePowerup[playerIdTurn], pwrUpProp.toCooldown);
             }
 
             consoleOutput(`P${playerIdTurn} TURN: You found NO boats here. :(`)
@@ -557,7 +654,7 @@ async function sqSelect(sq) {
             generateSqs(newPlr)
 
             playerIdTurn = newPlr
-            charBarId = playerCharacters[playerIdTurn]=='shaman' ? 'shamanPowerBar' : 'riceFarmerPowerBar'
+            charBarId = playerCharacters[playerIdTurn] == 'shaman' ? 'shamanPowerBar' : 'riceFarmerPowerBar'
 
             console.log(charBarId)
 
@@ -565,6 +662,16 @@ async function sqSelect(sq) {
 
             consoleOutput(`P${playerIdTurn} TURN: Your turn! Attack as you please!`)
         }
+
+        turnCount++
+
+        // if a powerup is on cooldown, reduce it by one turn
+        console.log('reduce')
+        for (const [key, pwrUp] of Object.entries(powerupProperties)) {
+            if (pwrUp.currentCooldown > 0) {
+                pwrUp.currentCooldown--;
+            };
+        };
 
         console.log('Turn: ' + turnCount)
 
@@ -866,12 +973,13 @@ for (let attElem of document.querySelectorAll('.attack')) {
     let id = attElem.classList[0];
     let statusElem = game.querySelector(`.${id} + p`)
     attElem.onclick = function () {
-        if (statusElem.innerHTML === 'READY TO USE' && activePowerup===null && ongoingTurn===false) {
-
-            activePowerup = id;
+        if (statusElem.innerHTML === 'READY TO USE' && activePowerup[playerIdTurn] === null && ongoingTurn === false) {
+            activePowerup[playerIdTurn] = id;
 
             statusElem.innerHTML = 'ACTIVE';
             statusElem.style.background = 'orange';
+
+            consoleOutput(`P${playerIdTurn} TURN: You selected powerup: ${id}.`)
 
         };
     };
@@ -883,17 +991,16 @@ async function cooldownAttack(attackClass, cooldownRate) { // 'rice-blessing', '
     let attElem = document.querySelector(`.${attackClass} + p`);
     let pwrUpProp = powerupProperties[attackClass];
 
-    activePowerup = null;
+    activePowerup[playerIdTurn] = null;
 
     attElem.innerHTML = `WAIT FOR ${pwrUpProp.currentCooldown} TURNS`
     attElem.style.backgroundColor = 'red'
 
-    let id = setInterval(function(){ // check every .5s to see if the cooldown is done
+    let id = setInterval(function () { // check every .5s to see if the cooldown is done
         attElem.innerHTML = `WAIT FOR ${pwrUpProp.currentCooldown} TURNS`
-        if (pwrUpProp.currentCooldown===0) {
+        if (pwrUpProp.currentCooldown === 0) {
             resetAttack(attackClass);
             clearInterval(id)
-            
         };
     }, 500);
 }
@@ -914,3 +1021,46 @@ function resetAttack(attackClass) {
 // }, 1000)
 
 // console.log('done')
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
+
+function getUnknownBoatSq(currentPlrId) {
+    const plrToAtt = playerIdTurn === 1 ? 2 : 1;
+
+    let found = null;
+
+    do {
+        
+        let randSq = getRandBoatSqFromPlrId(plrToAtt);
+        found = randSq;
+
+        console.log(savedPlrPos[currentPlrId])
+
+        for (let sqTabl of savedPlrPos[currentPlrId]) {
+            if (sqTabl[0] === randSq && sqTabl[1] === true) found = null;
+        }
+
+    } while (found === null)
+
+    return found
+    // pick a number 0-2 - 0 = basket, 1 = bamboo, 2 = fishing
+}
+
+function getRandBoatSqFromPlrId(plrId) {
+    const boatPosDir = boatPositions[plrId];
+    let randBoat = getRandomInt(3);
+
+    if (randBoat === 0) { randBoat = 'basket' }
+    else if (randBoat === 1) { randBoat = 'bamboo' }
+    else { randBoat = 'fishing' }
+
+    const randBoatList = boatPosDir[randBoat];
+    const singleRandBoat = randBoatList[getRandomInt(randBoatList.length)];
+    const randBoatSq = singleRandBoat[getRandomInt(singleRandBoat.length)]
+
+
+    return randBoatSq
+    // for (const [key, value] of Object.entries(boatPosDir)) {
+}
